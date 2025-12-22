@@ -12,7 +12,7 @@ if not api_key:
 from llama_index.llms.google_genai import GoogleGenAI
 
 # It automatically grabs the key from os.environ["GOOGLE_API_KEY"]
-llm = GoogleGenAI(model="models/gemini-flash-latest", api_key=api_key)
+llm = GoogleGenAI(model="models/gemini-flash-lite-latest", api_key=api_key)
 
 #######
 
@@ -32,7 +32,7 @@ Settings.embed_model = GoogleGenAIEmbedding(model="models/text-embedding-004", a
 # Load data from a PDF file.
 # Make sure you have a PDF file in a 'data' directory.
 # For this example, let's assume a file named 'messi_bio.pdf'
-PDF_FILE_PATH = "data/big_report.pdf"
+PDF_FILE_PATH = os.path.join(os.path.dirname(__file__), "data/big_report.pdf")
 
 try:
     documents = SimpleDirectoryReader(input_files=[PDF_FILE_PATH]).load_data()

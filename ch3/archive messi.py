@@ -16,8 +16,9 @@ llm = GoogleGenAI(model="models/gemini-flash-latest", api_key=api_key)
 
 #######
 
-from llama_index.core import Document, VectorStoreIndex, Settings, SimpleDirectoryReader
+from llama_index.core import Document, VectorStoreIndex, Settings
 from llama_index.core.node_parser import SimpleNodeParser
+from llama_index.readers.wikipedia import WikipediaReader
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 
 # For the Language Model (LLM), use your best general model
@@ -29,25 +30,14 @@ Settings.embed_model = GoogleGenAIEmbedding(model="models/text-embedding-004", a
 # --- End of Configuration ---
 
 
-# Load data from a PDF file.
-# Make sure you have a PDF file in a 'data' directory.
-# For this example, let's assume a file named 'messi_bio.pdf'
-PDF_FILE_PATH = "data/big_report.pdf"
-
-try:
-    documents = SimpleDirectoryReader(input_files=[PDF_FILE_PATH]).load_data()
-except Exception as e:
-    print(f"Error loading PDF: {e}")
-    print(f"Could not load the PDF file from '{PDF_FILE_PATH}'.")
-    print("Please make sure the file exists and the required dependencies are installed (e.g., `pip install pypdf`).")
-    documents = [Document(text="This is a dummy document. The PDF could not be loaded.")]
-
+loader = WikipediaReader()
+documents = loader.load_data(pages=["Paul Volker"])
 parser = SimpleNodeParser.from_defaults()
 nodes = parser.get_nodes_from_documents(documents)
 index = VectorStoreIndex(nodes)
 query_engine = index.as_query_engine()
 print(f"Using LLM model: {Settings.llm.metadata.model_name}")
-print("Ask me anything about the content of your PDF file!")
+print("Ask me anything about Lionel Messi!")
 
 while True:
     question = input("Your question: ")
